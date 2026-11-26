@@ -14,51 +14,73 @@ std::size_t Set::size() const noexcept {
 }
 
 bool Set::contains(int value) const {
-    (void)value;
-    throw std::logic_error("Student implementation required: contains");
+    return containsInternal(value);
 }
 
 bool Set::insert(int value) {
-    (void)value;
-    throw std::logic_error("Student implementation required: insert");
+    if (containsInternal(value)) {
+        return false;
+    }
+    elements_.push_back(value);
+    return true;
 }
 
 bool Set::erase(int value) {
-    (void)value;
-    throw std::logic_error("Student implementation required: erase");
+    auto it = std::find(elements_.begin(), elements_.end(), value);
+    if (it == elements_.end()) {
+        return false;
+    }
+    elements_.erase(it);
+    return true;
 }
 
 void Set::clear() {
-    throw std::logic_error("Student implementation required: clear");
+    elements_.clear();
 }
 
 std::vector<int> Set::toVector() const {
-    throw std::logic_error("Student implementation required: toVector");
+    std::vector<int> result = elements_;
+    std::sort(result.begin(), result.end());
+    return result;
 }
 
 bool Set::isSubsetOf(const Set& other) const {
-    (void)other;
-    throw std::logic_error("Student implementation required: isSubsetOf");
+    for (int value : elements_) {
+        if (!other.containsInternal(value)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 bool Set::equals(const Set& other) const {
-    (void)other;
-    throw std::logic_error("Student implementation required: equals");
+    return size() == other.size() && isSubsetOf(other);
 }
 
 Set Set::unionWith(const Set& other) const {
-    (void)other;
-    throw std::logic_error("Student implementation required: unionWith");
+    Set result = *this;
+    for (int value : other.elements_) {
+        result.insert(value);
+    }
+    return result;
 }
 
 Set Set::intersectionWith(const Set& other) const {
-    (void)other;
-    throw std::logic_error("Student implementation required: intersectionWith");
+    Set result;
+    for (int value : elements_) {
+        if (other.containsInternal(value)) {
+            result.insert(value);
+        }
+    }
+    return result;
 }
 
 Set Set::difference(const Set& other) const {
-    (void)other;
-    throw std::logic_error("Student implementation required: difference");
+    Set result = *this;
+    for (int value : other.elements_) {
+        result.erase(value);
+    }
+    return result;
 }
 
 bool Set::containsInternal(int value) const {
